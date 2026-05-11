@@ -1,0 +1,60 @@
+.formlens-tree {
+  display: block;
+}
+
+.formlens-tree__children {
+  margin-left: 16px;
+  padding-left: 12px;
+  border-left: 1px solid #e2e8f0;
+}
+
+.formlens-tree__node {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  margin: 4px 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #ffffff;
+  text-align: left;
+  cursor: pointer;
+}
+
+.formlens-tree__node:hover {
+  background: #f8fafc;
+}
+
+.formlens-tree__node.is-selected {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.formlens-tree__node.is-invalid {
+  border-left: 4px solid #dc2626;
+}
+
+.formlens-tree__main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.formlens-tree__name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.formlens-tree__kind {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.formlens-tree__meta {
+  flex: 0 0 auto;
+}

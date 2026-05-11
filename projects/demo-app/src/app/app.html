@@ -1,0 +1,73 @@
+<div class="demo-shell">
+  <header class="demo-shell__header">
+    <div>
+      <p class="demo-shell__eyebrow">FormLens demo</p>
+      <h1>Reactive Forms playground</h1>
+    </div>
+
+    <button type="button" (click)="openInspector()">
+      Open FormLens
+    </button>
+  </header>
+
+  <main class="demo-shell__content">
+    <section class="demo-card">
+      <h2>Profile form</h2>
+
+      <form [formGroup]="profileForm" formLens formLensName="Profile form">
+        <label>
+          Name
+          <input type="text" formControlName="name" />
+        </label>
+
+        <label>
+          Email
+          <input type="email" formControlName="email" />
+        </label>
+
+        <div formGroupName="address">
+          <label>
+            City
+            <input type="text" formControlName="city" />
+          </label>
+
+          <label>
+            ZIP Code
+            <input type="text" formControlName="zipCode" />
+          </label>
+        </div>
+
+        <div formArrayName="aliases">
+          @for (alias of aliases.controls; track $index) {
+            <label>
+              Alias {{ $index }}
+              <input [formControlName]="$index" />
+            </label>
+          }
+        </div>
+
+        <button type="button" (click)="addAlias()">Add alias</button>
+      </form>
+    </section>
+
+    <section class="demo-card">
+      <h2>Settings form</h2>
+
+      <form [formGroup]="settingsForm" formLens formLensName="Settings form">
+        <label>
+          <input type="checkbox" formControlName="notifications" />
+          Notifications
+        </label>
+
+        <label>
+          Theme
+          <select formControlName="theme">
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+            <option value="system">System</option>
+          </select>
+        </label>
+      </form>
+    </section>
+  </main>
+</div>

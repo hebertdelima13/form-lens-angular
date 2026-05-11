@@ -1,59 +1,104 @@
-# FormlensWorkspace
+# FormLens
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.10.
+FormLens is an open source debugging tool for Angular Reactive Forms.
 
-## Development server
+It helps you inspect form structure, control state, validation errors, and nested form trees directly inside your app during development.
 
-To start a local development server, run:
+## Why FormLens
 
-```bash
-ng serve
-```
+Debugging Angular forms often means checking `value`, `status`, `errors`, `dirty`, `touched`, and nested controls manually.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+FormLens makes that visual by giving you:
+- a side inspection panel
+- form tree visualization
+- live control state updates
+- error visibility
+- optional invalid field highlight
 
-## Code scaffolding
+## Current MVP
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+The current MVP includes:
+- Reactive Forms support
+- FormControl, FormGroup, and FormArray inspection
+- live panel with form tree and control details
+- search by control name or path
+- optional invalid control highlight
+- demo app for local exploration
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+## Installation
 
 ```bash
-ng build
+npm install formlens
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Quick setup
 
-## Running unit tests
+Register the provider in your app config:
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+```ts
+import { ApplicationConfig } from '@angular/core';
+import { provideFormLens } from 'formlens';
 
-```bash
-ng test
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideFormLens(),
+  ],
+};
 ```
 
-## Running end-to-end tests
+Add the directive to a reactive form:
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
+```html
+<form [formGroup]="profileForm" formLens formLensName="Profile form">
+  <input formControlName="name" />
+</form>
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Open the inspector from your app using the overlay service:
 
-## Additional Resources
+```ts
+import { Component, inject } from '@angular/core';
+import { FormLensOverlayService } from 'formlens';
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+@Component({
+  selector: 'app-root',
+  template: `<button (click)="openInspector()">Open FormLens</button>`,
+})
+export class AppComponent {
+  private readonly formLensOverlay = inject(FormLensOverlayService);
+
+  openInspector(): void {
+    this.formLensOverlay.toggle();
+  }
+}
+```
+
+## Quick start
+
+See the full setup guide in [docs/quick-start.md](./docs/quick-start.md).
+
+## Status
+
+FormLens is currently in MVP stage.
+The focus is validating value quickly with Angular Reactive Forms before expanding scope.
+
+## Roadmap
+
+Planned next improvements include:
+- tree expand and collapse
+- richer validator visibility
+- better highlight support for complex nested structures
+- keyboard shortcut improvements
+- API hardening before first public release
+
+## Demo
+
+Use the demo app in this repository to test:
+- multiple forms on the same screen
+- nested groups and arrays
+- invalid field highlighting
+- live state inspection
+
+## License
+
+MIT
