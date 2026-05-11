@@ -1,44 +1,49 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+# Dependencies
+node_modules/
 
-# Compiled output
-/dist
-/tmp
-/out-tsc
-/bazel-out
+# Build output
+dist/
+tmp/
+out-tsc/
+.angular/
+.cache/
 
-# Node
-/node_modules
-npm-debug.log
-yarn-error.log
+# Test and coverage
+coverage/
+.nyc_output/
+testem.log
 
-# IDEs and editors
-.idea/
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# Visual Studio Code
+# TypeScript
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE and editor files
 .vscode/*
 !.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
 !.vscode/extensions.json
-!.vscode/mcp.json
-.history/*
+!.vscode/launch.json
+!.vscode/tasks.json
+.idea/
+.history/
 
-# Miscellaneous
-/.angular/cache
-.sass-cache/
-/connect.lock
-/coverage
-/libpeerconnection.log
-testem.log
-/typings
-__screenshots__/
-
-# System files
+# OS files
 .DS_Store
 Thumbs.db
+
+# Misc
+.eslintcache
+.stylelintcache
+npm-packages-offline-cache/
+report.*.json
