@@ -6,7 +6,7 @@ It helps you inspect form structure, control state, validation errors, and neste
 
 ## Why FormLens
 
-Debugging Angular forms often means checking `value`, `status`, `errors`, `dirty`, `touched`, and nested controls manually.
+Debugging Angular forms often means manually checking `value`, `status`, `errors`, `dirty`, `touched`, and deeply nested controls.
 
 FormLens makes that visual by giving you:
 - a side inspection panel
@@ -15,15 +15,17 @@ FormLens makes that visual by giving you:
 - error visibility
 - optional invalid field highlight
 
-## Current MVP
+## Current alpha
 
-The current MVP includes:
+The current alpha includes:
 - Reactive Forms support
-- FormControl, FormGroup, and FormArray inspection
+- `FormControl`, `FormGroup`, and `FormArray` inspection
 - live panel with form tree and control details
 - search by control name or path
 - optional invalid control highlight
 - demo app for local exploration
+- quick start documentation
+- initial test coverage for core flows
 
 ## Installation
 
@@ -73,23 +75,26 @@ export class AppComponent {
 }
 ```
 
-## Quick start
+## Documentation
 
-See the full setup guide in [docs/quick-start.md](./docs/quick-start.md).
+- [Quick Start](./docs/quick-start.md)
+- [Roadmap](./ROADMAP.md)
+- [Contributing](./CONTRIBUTING.md)
+- [Changelog](./CHANGELOG.md)
 
 ## Status
 
-FormLens is currently in MVP stage.
-The focus is validating value quickly with Angular Reactive Forms before expanding scope.
+FormLens is currently in **alpha** stage.
 
-## Roadmap
+The current focus is validating real-world usefulness for Angular Reactive Forms debugging before expanding scope or hardening the public API further.
+
+## Roadmap highlights
 
 Planned next improvements include:
 - tree expand and collapse
 - richer validator visibility
 - better highlight support for complex nested structures
-- keyboard shortcut improvements
-- API hardening before first public release
+- more API hardening before a broader public release
 
 ## Demo
 
@@ -98,6 +103,15 @@ Use the demo app in this repository to test:
 - nested groups and arrays
 - invalid field highlighting
 - live state inspection
+
+## Feedback
+
+At this stage, the most valuable feedback is:
+- real usage in Angular projects
+- DX friction during setup
+- bugs in nested or dynamic forms
+- confusing inspection behavior
+- missing information in the panel
 
 ## License
 

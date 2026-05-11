@@ -1,0 +1,56 @@
+name: Feature request
+description: Suggest an improvement for FormLens
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement. Please keep requests focused and connected to the current product direction.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: What problem are you facing today?
+      placeholder: ex. It is hard to inspect very large nested forms because the tree is always expanded
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      placeholder: ex. Add expand/collapse behavior to tree nodes
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Real use case
+      description: Describe the Angular forms scenario where this would help.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - Inspection UI
+        - Highlighting
+        - Documentation
+        - Demo app
+        - Public API
+        - Developer experience
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context
+      description: Add screenshots, examples, or references if relevant.
