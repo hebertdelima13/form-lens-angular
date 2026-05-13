@@ -1,4 +1,11 @@
-import { Injectable, computed, effect, inject, signal, DestroyRef } from '@angular/core';
+import {
+  Injectable,
+  computed,
+  effect,
+  inject,
+  signal,
+  DestroyRef,
+} from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -20,6 +27,10 @@ export class FormSnapshotStore {
   private readonly _selectedNodePath = signal<string | null>(null);
   private readonly _searchQuery = signal('');
 
+  // Controla qual control estamos observando no momento
+  // para evitar múltiplas subscrições no mesmo control
+  private watchedControl: AbstractControl | null = null;
+
   readonly selectedFormId = this._selectedFormId.asReadonly();
   readonly activeSnapshot = this._activeSnapshot.asReadonly();
   readonly selectedNodePath = this._selectedNodePath.asReadonly();
@@ -28,10 +39,7 @@ export class FormSnapshotStore {
 
   readonly selectedForm = computed(() => {
     const formId = this._selectedFormId();
-    if (!formId) {
-      return null;
-    }
-
+    if (!formId) return null;
     return this.registry.getById(formId) ?? null;
   });
 
@@ -43,9 +51,7 @@ export class FormSnapshotStore {
     const snapshot = this._activeSnapshot();
     const path = this._selectedNodePath();
 
-    if (!snapshot || !path) {
-      return snapshot;
-    }
+    if (!snapshot || !path) return snapshot;
 
     return this.findNodeByPath(snapshot, path) ?? snapshot;
   });
@@ -59,10 +65,11 @@ export class FormSnapshotStore {
         this._selectedFormId.set(null);
         this._activeSnapshot.set(null);
         this._selectedNodePath.set(null);
+        this.watchedControl = null;
         return;
       }
 
-      if (!selectedFormId || !forms.some((form) => form.id === selectedFormId)) {
+      if (!selectedFormId || !forms.some((f) => f.id === selectedFormId)) {
         this._selectedFormId.set(forms[0].id);
       }
 
@@ -72,6 +79,8 @@ export class FormSnapshotStore {
 
   selectForm(formId: string): void {
     this._selectedFormId.set(formId);
+    // Ao trocar de form, força re-subscrição no novo control
+    this.watchedControl = null;
     this.refreshSnapshot();
   }
 
@@ -93,38 +102,59 @@ export class FormSnapshotStore {
     }
 
     const rootControl = selected.source.control;
-    const snapshot = this.snapshotFactory.create(rootControl, 'root');
 
+    // Tira o snapshot imediatamente
+    const snapshot = this.snapshotFactory.create(rootControl, 'root');
     this._activeSnapshot.set(snapshot);
 
     if (!this._selectedNodePath()) {
       this._selectedNodePath.set(snapshot.path);
     }
+
+    // Inicia watch apenas se ainda não estamos observando esse control
+    if (this.watchedControl !== rootControl) {
+      this.watchedControl = rootControl;
+      this.watchControl(rootControl);
+    }
   }
 
-  watch(control: AbstractControl): void {
+  /**
+   * Assina valueChanges e statusChanges do control raiz.
+   * Usa takeUntilDestroyed para cleanup automático.
+   * A guarda watchedControl evita subscrições duplicadas
+   * quando refreshSnapshot() é chamado mais de uma vez para o mesmo form.
+   */
+  private watchControl(control: AbstractControl): void {
     control.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.refreshSnapshot());
+      .subscribe(() => {
+        const snapshot = this.snapshotFactory.create(
+          this.selectedForm()!.source.control,
+          'root'
+        );
+        this._activeSnapshot.set(snapshot);
+      });
 
     control.statusChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.refreshSnapshot());
+      .subscribe(() => {
+        const snapshot = this.snapshotFactory.create(
+          this.selectedForm()!.source.control,
+          'root'
+        );
+        this._activeSnapshot.set(snapshot);
+      });
   }
 
   private findNodeByPath(
     snapshot: ControlSnapshot,
     path: string
   ): ControlSnapshot | null {
-    if (snapshot.path === path) {
-      return snapshot;
-    }
+    if (snapshot.path === path) return snapshot;
 
     for (const child of snapshot.children ?? []) {
       const match = this.findNodeByPath(child, path);
-      if (match) {
-        return match;
-      }
+      if (match) return match;
     }
 
     return null;
