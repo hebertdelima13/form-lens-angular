@@ -1,4 +1,4 @@
-import { Injectable, Injector, inject } from '@angular/core';
+import { Injectable, Injector, inject, signal } from '@angular/core';
 import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { FormLensPanelComponent } from './formlens-panel.component';
@@ -12,6 +12,8 @@ export class FormLensOverlayService {
 
   private overlayRef: OverlayRef | null = null;
 
+  readonly isOpen = signal(false);
+
   open(): void {
     if (this.overlayRef) {
       return;
@@ -21,11 +23,13 @@ export class FormLensOverlayService {
     this.overlayRef.attach(
       new ComponentPortal(FormLensPanelComponent, null, this.injector)
     );
+    this.isOpen.set(true);
   }
 
   close(): void {
     this.overlayRef?.dispose();
     this.overlayRef = null;
+    this.isOpen.set(false);
   }
 
   toggle(): void {
@@ -48,8 +52,6 @@ export class FormLensOverlayService {
         .top('0')
         .right('0')
         .bottom('0'),
-      // Sem width fixo aqui — o componente controla via CSS
-      // height: 100% garante que o pane do CDK ocupa a viewport inteira
       height: '100%',
       disposeOnNavigation: true,
     };

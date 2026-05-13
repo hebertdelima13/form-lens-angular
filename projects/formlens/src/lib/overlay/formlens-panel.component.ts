@@ -6,6 +6,7 @@ import { ControlSnapshot } from '../core/formlens.types';
 import { StatusBadgeComponent } from '../ui/status-badge.component';
 import { ControlTreeComponent } from '../ui/control-tree.component';
 import { ControlDetailsComponent } from '../ui/control-details.component';
+import { FormLensOverlayService } from './formlens-overlay.service';
 
 @Component({
   selector: 'formlens-panel',
@@ -23,6 +24,21 @@ import { ControlDetailsComponent } from '../ui/control-details.component';
           <p class="formlens-panel__eyebrow">FormLens</p>
           <h2 class="formlens-panel__title">Reactive Forms Inspector</h2>
         </div>
+
+        <button
+          type="button"
+          class="formlens-panel__close"
+          (click)="close()"
+          aria-label="Close FormLens"
+          title="Close"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5"
+               stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
       </header>
 
       <section class="formlens-panel__section">
@@ -98,6 +114,7 @@ import { ControlDetailsComponent } from '../ui/control-details.component';
 })
 export class FormLensPanelComponent {
   readonly snapshotStore = inject(FormSnapshotStore);
+  private readonly overlayService = inject(FormLensOverlayService);
 
   readonly forms = this.snapshotStore.forms;
   readonly selectedFormId = this.snapshotStore.selectedFormId;
@@ -105,6 +122,10 @@ export class FormLensPanelComponent {
   readonly searchQuery = this.snapshotStore.searchQuery;
   readonly filteredSnapshot = this.snapshotStore.filteredSnapshot;
   readonly selectedNode = this.snapshotStore.selectedNode;
+
+  close(): void {
+    this.overlayService.close();
+  }
 
   onSelectForm(event: Event): void {
     const target = event.target as HTMLSelectElement;

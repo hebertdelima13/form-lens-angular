@@ -104,3 +104,33 @@
   color: #64748b;
   font-size: 13px;
 }
+
+.formlens-panel__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.formlens-panel__close {
+  all: unset;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: #64748b;
+  cursor: pointer;
+  transition: background 0.1s ease, color 0.1s ease;
+
+  &:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+  }
+
+  &:active {
+    background: #e2e8f0;
+  }
+}
