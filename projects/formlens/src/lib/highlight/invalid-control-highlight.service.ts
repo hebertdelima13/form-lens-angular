@@ -81,39 +81,36 @@ export class InvalidControlHighlightService {
    * Cada filho pode ser FormControl, FormGroup ou FormArray aninhado.
    */
   private highlightArray(array: FormArray, arrayContainer: HTMLElement): void {
-    array.controls.forEach((control, index) => {
-      if (!control.invalid) return;
+  // Coleta todos os containers de grupo diretos dentro do array
+  // (elementos que contêm pelo menos um [formControlName] filho)
+  const groupContainers = Array.from(
+    arrayContainer.children
+  ) as HTMLElement[];
 
-      if (control instanceof FormGroup) {
-        // Grupo dentro de array — busca [formGroupName="index"] ou nth filho
-        const groupEl =
-          arrayContainer.querySelector<HTMLElement>(`[formGroupName="${index}"]`) ??
-          this.findNthChild(arrayContainer, '[formGroupName]', index);
+  array.controls.forEach((control, index) => {
+    if (!control.invalid) return;
 
-        if (groupEl) {
-          // Descende para marcar os filhos inválidos dentro do grupo
-          this.highlightGroup(control, groupEl);
-        }
+    if (control instanceof FormGroup) {
+      // Usa posição no DOM — não depende do atributo formGroupName
+      const groupEl = groupContainers[index] ?? arrayContainer;
+      this.highlightGroup(control, groupEl);
 
-      } else if (control instanceof FormArray) {
-        const nestedArrayEl =
-          arrayContainer.querySelector<HTMLElement>(`[formArrayName="${index}"]`) ??
-          arrayContainer;
-        this.highlightArray(control, nestedArrayEl);
+    } else if (control instanceof FormArray) {
+      const nestedEl = groupContainers[index] ?? arrayContainer;
+      this.highlightArray(control, nestedEl);
 
-      } else {
-        // FormControl direto dentro do array — busca pelo nth input/select/textarea
-        const el = this.findNthChild(
-          arrayContainer,
-          'input, select, textarea, [formControlName]',
-          index
-        );
-        if (el) {
-          this.renderer.addClass(el, FORMLENS_INVALID_CONTROL_CLASS);
-        }
+    } else {
+      const el = this.findNthChild(
+        arrayContainer,
+        'input, select, textarea, [formControlName]',
+        index
+      );
+      if (el) {
+        this.renderer.addClass(el, FORMLENS_INVALID_CONTROL_CLASS);
       }
-    });
-  }
+    }
+  });
+}
 
   private findNthChild(
     container: HTMLElement,
