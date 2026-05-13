@@ -5,10 +5,35 @@ export type FormLensDetailLevel = 'compact' | 'detailed';
 export type ControlSnapshotKind = 'control' | 'group' | 'array';
 
 export interface FormLensConfig {
+  /**
+   * Whether FormLens is active. Defaults to true.
+   * When false, no FAB is injected and no forms are tracked.
+   * @reserved — not yet implemented
+   */
   enabled?: boolean;
+
+  /**
+   * Side of the screen where the inspector panel appears.
+   * @reserved — not yet implemented, panel is always on the right
+   */
   panelPosition?: FormLensPanelPosition;
+
+  /**
+   * When true, invalid form controls are highlighted with an outline in the DOM.
+   * Defaults to true.
+   */
   overlayInvalidControls?: boolean;
+
+  /**
+   * Keyboard shortcut to toggle the inspector panel.
+   * @reserved — not yet implemented
+   */
   hotkey?: string;
+
+  /**
+   * Controls how much detail is shown per node in the inspector.
+   * @reserved — not yet implemented
+   */
   detailLevel?: FormLensDetailLevel;
 }
 
@@ -33,7 +58,7 @@ export interface ControlSnapshot {
   disabled: boolean;
   value: unknown;
   errors: Record<string, unknown> | null;
-  validators: string[];          // ← NOVO: nomes dos validators ativos
+  validators: string[];
   children?: ControlSnapshot[];
 }
 

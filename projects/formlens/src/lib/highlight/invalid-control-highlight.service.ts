@@ -35,53 +35,51 @@ export class InvalidControlHighlightService {
     }
 
     this.clear(formElement);
-
-    // Caminha recursivamente pela árvore de controles e faz highlight
-    this.highlightTree(formGroupDirective.control, formElement, '');
+    this.highlightTree(formGroupDirective.control, formElement, formElement);
   }
 
   clear(formElement: HTMLElement): void {
-    const highlighted = formElement.querySelectorAll(
-      `.${FORMLENS_INVALID_CONTROL_CLASS}`
-    );
-
-    highlighted.forEach((element) => {
-      this.renderer.removeClass(element, FORMLENS_INVALID_CONTROL_CLASS);
-    });
+    formElement
+      .querySelectorAll(`.${FORMLENS_INVALID_CONTROL_CLASS}`)
+      .forEach((el) => this.renderer.removeClass(el, FORMLENS_INVALID_CONTROL_CLASS));
   }
 
   /**
-   * Percorre recursivamente a árvore de AbstractControl e aplica highlight
-   * nos elementos DOM correspondentes quando o controle é inválido.
+   * Percorre recursivamente a árvore de AbstractControl.
    *
-   * Estratégia de busca DOM:
-   *   1. [formControlName="name"]         — controle direto em FormGroup
-   *   2. [formGroupName="name"]            — FormGroup aninhado
-   *   3. [formArrayName="name"]            — FormArray
-   *   4. Para itens de FormArray: busca pelo índice de posição relativa
-   *      dentro do elemento pai marcado com [formArrayName]
+   * @param control  — controle atual
+   * @param formRoot — elemento raiz do <form> (usado para busca de fallback)
+   * @param container — elemento DOM de escopo atual (afunila a cada FormGroup aninhado)
    */
   private highlightTree(
     control: AbstractControl,
-    formElement: HTMLElement,
-    path: string
+    formRoot: HTMLElement,
+    container: HTMLElement,
   ): void {
     if (control instanceof FormGroup) {
       for (const [name, child] of Object.entries(control.controls)) {
-        this.highlightTree(child, formElement, name);
+        // Tenta encontrar o elemento [formGroupName] para afunilar o escopo
+        const groupEl = container.querySelector<HTMLElement>(`[formGroupName="${name}"]`);
+        // Se achou o sub-container, desce com ele; senão usa o container atual
+        const nextContainer = groupEl ?? container;
+        this.highlightTree(child, formRoot, nextContainer);
       }
     } else if (control instanceof FormArray) {
-      // FormArray em si não tem elemento DOM direto — só os filhos
+      const arrayEl = container.querySelector<HTMLElement>(`[formArrayName]`) ?? container;
       control.controls.forEach((child, index) => {
-        this.highlightArrayItem(child, formElement, path, index);
+        this.highlightArrayItem(child, arrayEl, index);
       });
     } else {
-      // FormControl folha
-      if (!control.invalid) {
-        return;
-      }
+      // FormControl folha — só age se inválido
+      if (!control.invalid) return;
 
-      const el = this.findElementByAttr(formElement, 'formControlName', path);
+      // Busca primeiro dentro do container atual (escopo estreito)
+      // e só depois faz fallback para a raiz do form
+      const el =
+        container.querySelector<HTMLElement>(`[formControlName]`) !== null
+          ? this.findControlInContainer(container, formRoot)
+          : null;
+
       if (el) {
         this.renderer.addClass(el, FORMLENS_INVALID_CONTROL_CLASS);
       }
@@ -89,87 +87,65 @@ export class InvalidControlHighlightService {
   }
 
   /**
-   * Para itens de FormArray, encontra o container [formArrayName]
-   * e depois localiza o n-ésimo filho interativo.
+   * Para FormControl dentro de FormGroup, encontra o input/select/textarea
+   * mais próximo dentro do container de escopo.
+   */
+  private findControlInContainer(
+    container: HTMLElement,
+    formRoot: HTMLElement,
+  ): HTMLElement | null {
+    // Prefere o [formControlName] dentro do container estreito
+    const byAttr = container.querySelector<HTMLElement>('[formControlName]');
+    if (byAttr) return byAttr;
+
+    // Fallback: primeiro campo interativo no container
+    return container.querySelector<HTMLElement>('input, select, textarea');
+  }
+
+  /**
+   * Para itens de FormArray, encontra e destaca o n-ésimo filho.
    */
   private highlightArrayItem(
     control: AbstractControl,
-    formElement: HTMLElement,
-    arrayName: string,
-    index: number
+    arrayContainer: HTMLElement,
+    index: number,
   ): void {
-    if (!control.invalid) {
-      return;
-    }
-
-    // Tenta encontrar o container do array
-    const arrayContainer = arrayName
-      ? this.findElementByAttr(formElement, 'formArrayName', arrayName)
-      : formElement;
-
-    if (!arrayContainer) {
-      return;
-    }
+    if (!control.invalid) return;
 
     if (control instanceof FormGroup) {
-      // Grupos dentro de array: busca pelo formGroupName="index" ou nth-child
+      // Item do array é um FormGroup — busca pelo [formGroupName="index"] ou nth dentro do array
       const groupEl =
-        this.findElementByAttr(arrayContainer as HTMLElement, 'formGroupName', String(index)) ??
-        this.findNthFormGroupInArray(arrayContainer as HTMLElement, index);
+        arrayContainer.querySelector<HTMLElement>(`[formGroupName="${index}"]`) ??
+        this.findNthFormGroupInArray(arrayContainer, index);
 
       if (groupEl) {
         this.renderer.addClass(groupEl, FORMLENS_INVALID_CONTROL_CLASS);
       }
     } else {
-      // Control direto dentro do array
-      const el = this.findNthFormControlInArray(arrayContainer as HTMLElement, index);
+      // Item do array é um FormControl direto
+      const el = this.findNthFormControlInArray(arrayContainer, index);
       if (el) {
         this.renderer.addClass(el, FORMLENS_INVALID_CONTROL_CLASS);
       }
     }
   }
 
-  private findElementByAttr(
-    container: HTMLElement,
-    attr: string,
-    value: string
-  ): HTMLElement | null {
-    if (!value && value !== '0') {
-      return null;
-    }
-    return container.querySelector(`[${attr}="${value}"]`) as HTMLElement | null;
-  }
-
-  private findNthFormGroupInArray(
-    arrayContainer: HTMLElement,
-    index: number
-  ): HTMLElement | null {
-    const groups = arrayContainer.querySelectorAll('[formGroupName]');
+  private findNthFormGroupInArray(container: HTMLElement, index: number): HTMLElement | null {
+    const groups = container.querySelectorAll('[formGroupName]');
     return (groups[index] as HTMLElement) ?? null;
   }
 
-  private findNthFormControlInArray(
-    arrayContainer: HTMLElement,
-    index: number
-  ): HTMLElement | null {
-    const controls = arrayContainer.querySelectorAll(
-      'input, select, textarea, [formControlName]'
-    );
+  private findNthFormControlInArray(container: HTMLElement, index: number): HTMLElement | null {
+    const controls = container.querySelectorAll('input, select, textarea, [formControlName]');
     return (controls[index] as HTMLElement) ?? null;
   }
 
   private ensureGlobalStyles(): void {
-    const existing = this.document.getElementById(
-      'formlens-highlight-styles'
-    ) as HTMLStyleElement | null;
+    if (this.document.getElementById('formlens-highlight-styles')) return;
 
-    if (existing) {
-      return;
-    }
-
-    const styleElement = this.renderer.createElement('style') as HTMLStyleElement;
-    styleElement.id = 'formlens-highlight-styles';
-    styleElement.textContent = FORMLENS_HIGHLIGHT_GLOBAL_STYLES;
-    this.renderer.appendChild(this.document.head, styleElement);
+    const styleEl = this.renderer.createElement('style') as HTMLStyleElement;
+    styleEl.id = 'formlens-highlight-styles';
+    styleEl.textContent = FORMLENS_HIGHLIGHT_GLOBAL_STYLES;
+    this.renderer.appendChild(this.document.head, styleEl);
   }
 }

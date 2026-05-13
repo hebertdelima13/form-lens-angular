@@ -8,6 +8,10 @@ import { ControlTreeComponent } from '../ui/control-tree.component';
 import { ControlDetailsComponent } from '../ui/control-details.component';
 import { FormLensOverlayService } from './formlens-overlay.service';
 
+// Internal component — not part of the public API.
+// Instantiated programmatically by FormLensOverlayService via Angular CDK ComponentPortal.
+// Do not import or reference this component directly in application code.
+
 @Component({
   selector: 'formlens-panel',
   standalone: true,
