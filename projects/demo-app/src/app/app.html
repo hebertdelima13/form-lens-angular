@@ -4,70 +4,267 @@
       <p class="demo-shell__eyebrow">FormLens demo</p>
       <h1>Reactive Forms playground</h1>
     </div>
-
-    <button type="button" (click)="openInspector()">
-      Open FormLens
-    </button>
+    <p class="demo-shell__hint">
+      Use the <strong>FormLens</strong> button at the bottom-right to inspect any form.
+    </p>
   </header>
 
   <main class="demo-shell__content">
-    <section class="demo-card">
-      <h2>Profile form</h2>
 
-      <form [formGroup]="profileForm" formLens formLensName="Profile form">
-        <label>
-          Name
-          <input type="text" formControlName="name" />
-        </label>
+    <!-- ── 1. Checkout ────────────────────────────────────── -->
+    <section class="demo-card demo-card--full">
+      <h2 class="demo-card__title">
+        <span class="demo-card__badge">1</span>
+        Checkout form
+        <span class="demo-card__sub">Nested groups + FormArray + cross-validator</span>
+      </h2>
 
-        <label>
-          Email
-          <input type="email" formControlName="email" />
-        </label>
+      <form [formGroup]="checkoutForm" formLens formLensName="Checkout">
 
-        <div formGroupName="address">
-          <label>
-            City
-            <input type="text" formControlName="city" />
+        <!-- Customer -->
+        <fieldset formGroupName="customer">
+          <legend>Customer info</legend>
+          <div class="demo-grid demo-grid--2">
+            <label class="demo-field">
+              First name <span class="demo-required">*</span>
+              <input type="text" formControlName="firstName" placeholder="John" />
+              @if (checkoutForm.get('customer.firstName')?.invalid && checkoutForm.get('customer.firstName')?.touched) {
+                <span class="demo-error">Required, min 2 chars</span>
+              }
+            </label>
+
+            <label class="demo-field">
+              Last name <span class="demo-required">*</span>
+              <input type="text" formControlName="lastName" placeholder="Doe" />
+            </label>
+
+            <label class="demo-field">
+              Email <span class="demo-required">*</span>
+              <input type="email" formControlName="email" placeholder="john@example.com" />
+              @if (checkoutForm.get('customer.email')?.invalid && checkoutForm.get('customer.email')?.touched) {
+                <span class="demo-error">Valid email required</span>
+              }
+            </label>
+
+            <label class="demo-field">
+              Phone
+              <input type="tel" formControlName="phone" placeholder="+55 11 99999-9999" />
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Shipping -->
+        <fieldset formGroupName="shipping">
+          <legend>Shipping address</legend>
+          <div class="demo-grid demo-grid--3">
+            <label class="demo-field demo-field--span2">
+              Street <span class="demo-required">*</span>
+              <input type="text" formControlName="street" placeholder="Av. Paulista" />
+            </label>
+
+            <label class="demo-field">
+              Number <span class="demo-required">*</span>
+              <input type="text" formControlName="number" placeholder="1000" />
+            </label>
+
+            <label class="demo-field">
+              City <span class="demo-required">*</span>
+              <input type="text" formControlName="city" placeholder="São Paulo" />
+            </label>
+
+            <label class="demo-field">
+              State <span class="demo-required">*</span>
+              <input type="text" formControlName="state" placeholder="SP" />
+            </label>
+
+            <label class="demo-field">
+              ZIP Code <span class="demo-required">*</span>
+              <input type="text" formControlName="zipCode" placeholder="01310-100" />
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Items -->
+        <fieldset>
+          <legend>Order items</legend>
+          <div formArrayName="items" class="demo-array">
+            @for (item of checkoutItems.controls; track $index) {
+              <div [formGroupName]="$index" class="demo-array__row">
+                <label class="demo-field demo-field--grow">
+                  Product
+                  <input type="text" formControlName="product" placeholder="Product name" />
+                </label>
+                <label class="demo-field demo-field--sm">
+                  Qty
+                  <input type="number" formControlName="qty" min="1" max="99" />
+                </label>
+                <label class="demo-field demo-field--sm">
+                  Price (R$)
+                  <input type="number" formControlName="price" step="0.01" />
+                </label>
+                @if (checkoutItems.length > 1) {
+                  <button type="button" class="demo-btn demo-btn--ghost demo-btn--remove"
+                          (click)="removeItem($index)">✕</button>
+                }
+              </div>
+            }
+          </div>
+          <button type="button" class="demo-btn demo-btn--outline" (click)="addItem()">
+            + Add item
+          </button>
+        </fieldset>
+
+        <!-- Payment & Terms -->
+        <div class="demo-grid demo-grid--2">
+          <label class="demo-field">
+            Payment method <span class="demo-required">*</span>
+            <select formControlName="paymentMethod">
+              <option value="credit">Credit card</option>
+              <option value="pix">Pix</option>
+              <option value="boleto">Boleto</option>
+            </select>
           </label>
 
-          <label>
-            ZIP Code
-            <input type="text" formControlName="zipCode" />
+          <label class="demo-field demo-field--checkbox">
+            <input type="checkbox" formControlName="acceptTerms" />
+            I accept the terms and conditions <span class="demo-required">*</span>
           </label>
         </div>
 
-        <div formArrayName="aliases">
-          @for (alias of aliases.controls; track $index) {
-            <label>
-              Alias {{ $index }}
-              <input [formControlName]="$index" />
-            </label>
+        <div class="demo-actions">
+          <button type="submit" class="demo-btn demo-btn--primary"
+                  [disabled]="checkoutForm.invalid">
+            Place order
+          </button>
+          <span class="demo-status" [class.is-valid]="checkoutForm.valid">
+            {{ checkoutForm.valid ? '✓ Valid' : '✗ Has errors' }}
+          </span>
+        </div>
+      </form>
+    </section>
+
+    <!-- ── 2. Registration ───────────────────────────────── -->
+    <section class="demo-card">
+      <h2 class="demo-card__title">
+        <span class="demo-card__badge">2</span>
+        Registration
+        <span class="demo-card__sub">Custom validators + cross-field</span>
+      </h2>
+
+      <form [formGroup]="registrationForm" formLens formLensName="Registration">
+        <label class="demo-field">
+          Username <span class="demo-required">*</span>
+          <input type="text" formControlName="username" placeholder="my_username" />
+          @if (registrationForm.get('username')?.hasError('noSpaces')) {
+            <span class="demo-error">No spaces allowed</span>
+          }
+          @if (registrationForm.get('username')?.hasError('minlength')) {
+            <span class="demo-error">Minimum 4 characters</span>
+          }
+        </label>
+
+        <label class="demo-field">
+          Password <span class="demo-required">*</span>
+          <input type="password" formControlName="password" placeholder="Min 8 characters" />
+        </label>
+
+        <label class="demo-field">
+          Confirm password <span class="demo-required">*</span>
+          <input type="password" formControlName="confirmPassword" placeholder="Repeat password" />
+          @if (registrationForm.hasError('passwordMismatch') && registrationForm.get('confirmPassword')?.touched) {
+            <span class="demo-error">Passwords do not match</span>
+          }
+        </label>
+
+        <label class="demo-field">
+          Role <span class="demo-required">*</span>
+          <select formControlName="role">
+            <option value="admin">Admin</option>
+            <option value="editor">Editor</option>
+            <option value="viewer">Viewer</option>
+          </select>
+        </label>
+
+        <label class="demo-field">
+          Bio
+          <textarea formControlName="bio" rows="3" placeholder="Tell us about yourself (max 160 chars)"></textarea>
+          <span class="demo-hint">{{ registrationForm.get('bio')?.value?.length ?? 0 }}/160</span>
+        </label>
+
+        <div class="demo-actions">
+          <button type="submit" class="demo-btn demo-btn--primary"
+                  [disabled]="registrationForm.invalid">
+            Create account
+          </button>
+          <span class="demo-status" [class.is-valid]="registrationForm.valid">
+            {{ registrationForm.valid ? '✓ Valid' : '✗ Has errors' }}
+          </span>
+        </div>
+      </form>
+    </section>
+
+    <!-- ── 3. Survey ─────────────────────────────────────── -->
+    <section class="demo-card">
+      <h2 class="demo-card__title">
+        <span class="demo-card__badge">3</span>
+        Survey builder
+        <span class="demo-card__sub">Dynamic FormArray of FormGroups</span>
+      </h2>
+
+      <form [formGroup]="surveyForm" formLens formLensName="Survey">
+        <label class="demo-field">
+          Survey title <span class="demo-required">*</span>
+          <input type="text" formControlName="title" />
+        </label>
+
+        <div formArrayName="questions" class="demo-array">
+          @for (q of surveyQuestions.controls; track $index) {
+            <div [formGroupName]="$index" class="demo-array__row demo-array__row--col">
+              <div class="demo-grid demo-grid--2">
+                <label class="demo-field demo-field--grow">
+                  Question {{ $index + 1 }} <span class="demo-required">*</span>
+                  <input type="text" formControlName="text" placeholder="Enter question..." />
+                </label>
+
+                <label class="demo-field">
+                  Type
+                  <select formControlName="type">
+                    <option value="text">Text</option>
+                    <option value="rating">Rating</option>
+                    <option value="boolean">Yes / No</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="demo-row">
+                <label class="demo-field demo-field--checkbox">
+                  <input type="checkbox" formControlName="required" />
+                  Required
+                </label>
+                @if (surveyQuestions.length > 1) {
+                  <button type="button" class="demo-btn demo-btn--ghost"
+                          (click)="removeQuestion($index)">Remove</button>
+                }
+              </div>
+            </div>
           }
         </div>
 
-        <button type="button" (click)="addAlias()">Add alias</button>
+        <button type="button" class="demo-btn demo-btn--outline" (click)="addQuestion()">
+          + Add question
+        </button>
+
+        <div class="demo-actions">
+          <button type="submit" class="demo-btn demo-btn--primary"
+                  [disabled]="surveyForm.invalid">
+            Publish survey
+          </button>
+          <span class="demo-status" [class.is-valid]="surveyForm.valid">
+            {{ surveyForm.valid ? '✓ Valid' : '✗ Has errors' }}
+          </span>
+        </div>
       </form>
     </section>
 
-    <section class="demo-card">
-      <h2>Settings form</h2>
-
-      <form [formGroup]="settingsForm" formLens formLensName="Settings form">
-        <label>
-          <input type="checkbox" formControlName="notifications" />
-          Notifications
-        </label>
-
-        <label>
-          Theme
-          <select formControlName="theme">
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-            <option value="system">System</option>
-          </select>
-        </label>
-      </form>
-    </section>
   </main>
 </div>

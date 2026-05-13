@@ -1,13 +1,17 @@
 :host {
   display: block;
   min-height: 100vh;
-  background: #f8fafc;
+  background: #f1f5f9;
   color: #0f172a;
   font-family: Inter, system-ui, sans-serif;
 }
 
+// ── Shell ──────────────────────────────────────────────────────────────────
+
 .demo-shell {
-  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px 100px; // padding-bottom para não sobrepor o FAB
 }
 
 .demo-shell__header {
@@ -15,75 +19,313 @@
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .demo-shell__eyebrow {
   margin: 0 0 4px;
-  font-size: 12px;
+  font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   color: #64748b;
 }
 
 .demo-shell__header h1 {
   margin: 0;
   font-size: 28px;
+  font-weight: 700;
+}
+
+.demo-shell__hint {
+  margin: 0;
+  font-size: 13px;
+  color: #64748b;
+  text-align: right;
 }
 
 .demo-shell__content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+// ── Card ───────────────────────────────────────────────────────────────────
+
+.demo-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+.demo-card--full {
+  grid-column: 1 / -1;
+}
+
+.demo-card__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0 0 20px;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.demo-card__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: #2563eb;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+
+.demo-card__sub {
+  font-size: 12px;
+  font-weight: 400;
+  color: #64748b;
+}
+
+// ── Form base ──────────────────────────────────────────────────────────────
+
+form {
+  display: flex;
+  flex-direction: column;
   gap: 16px;
 }
 
-.demo-card {
-  padding: 16px;
+fieldset {
   border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  background: #ffffff;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.demo-card h2 {
-  margin-top: 0;
-  margin-bottom: 16px;
-  font-size: 18px;
+legend {
+  padding: 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #475569;
 }
 
-form {
+// ── Grid ───────────────────────────────────────────────────────────────────
+
+.demo-grid {
   display: grid;
   gap: 12px;
 }
 
-label {
-  display: grid;
-  gap: 6px;
-  font-size: 14px;
+.demo-grid--2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.demo-grid--3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.demo-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+// ── Field ──────────────────────────────────────────────────────────────────
+
+.demo-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 500;
   color: #334155;
 }
 
-input,
-select,
-button {
-  font: inherit;
+.demo-field--span2 {
+  grid-column: span 2;
 }
+
+.demo-field--grow {
+  flex: 1;
+}
+
+.demo-field--sm {
+  width: 90px;
+}
+
+.demo-field--checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.demo-required {
+  color: #dc2626;
+  margin-left: 2px;
+}
+
+.demo-error {
+  font-size: 11px;
+  color: #dc2626;
+  font-weight: 400;
+}
+
+.demo-hint {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 400;
+  text-align: right;
+}
+
+// ── Inputs ─────────────────────────────────────────────────────────────────
 
 input[type='text'],
 input[type='email'],
-select {
-  padding: 10px 12px;
+input[type='tel'],
+input[type='number'],
+input[type='password'],
+select,
+textarea {
+  padding: 9px 12px;
   border: 1px solid #cbd5e1;
-  border-radius: 10px;
+  border-radius: 8px;
   background: #fff;
+  font: inherit;
+  font-size: 14px;
+  color: #0f172a;
+  transition: border-color 0.15s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
 }
 
-button {
-  width: fit-content;
-  padding: 10px 14px;
-  border: 1px solid #2563eb;
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+// ── Array ──────────────────────────────────────────────────────────────────
+
+.demo-array {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.demo-array__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
   border-radius: 10px;
+  background: #f8fafc;
+}
+
+.demo-array__row--col {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+// ── Buttons ────────────────────────────────────────────────────────────────
+
+.demo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: none;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.demo-btn--primary {
   background: #2563eb;
   color: #fff;
-  cursor: pointer;
+
+  &:not(:disabled):hover {
+    background: #1d4ed8;
+  }
+}
+
+.demo-btn--outline {
+  background: transparent;
+  border: 1px dashed #94a3b8;
+  color: #475569;
+  width: fit-content;
+
+  &:hover {
+    border-color: #2563eb;
+    color: #2563eb;
+  }
+}
+
+.demo-btn--ghost {
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+
+  &:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+    color: #dc2626;
+  }
+}
+
+.demo-btn--remove {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+}
+
+// ── Actions / Status ───────────────────────────────────────────────────────
+
+.demo-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 4px;
+}
+
+.demo-status {
+  font-size: 12px;
+  font-weight: 600;
+  color: #dc2626;
+
+  &.is-valid {
+    color: #16a34a;
+  }
 }
