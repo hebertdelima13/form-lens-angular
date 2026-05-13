@@ -1,7 +1,7 @@
 import {
+  APP_INITIALIZER,
   EnvironmentProviders,
   makeEnvironmentProviders,
-  provideAppInitializer,
 } from '@angular/core';
 import { FORM_LENS_CONFIG } from './formlens.tokens';
 import {
@@ -21,6 +21,10 @@ export function provideFormLens(
         ...config,
       } satisfies FormLensConfig,
     },
-    provideAppInitializer(initFormLensFab),
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initFormLensFab,
+      multi: true,
+    },
   ]);
 }
