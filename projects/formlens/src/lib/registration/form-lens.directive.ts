@@ -46,7 +46,11 @@ export class FormLensDirective implements OnInit {
 
     const formElement = this.hostElement.nativeElement;
 
-    this.highlightService.sync(this.formGroupDirective, formElement);
+    // setTimeout garante que o DOM dos [formControlName] já foi renderizado
+    // antes do primeiro sync de highlight
+    setTimeout(() => {
+      this.highlightService.sync(this.formGroupDirective!, formElement);
+    }, 0);
 
     this.formGroupDirective.statusChanges
       ?.pipe(takeUntilDestroyed(this.destroyRef))
