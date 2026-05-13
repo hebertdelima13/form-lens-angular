@@ -33,6 +33,7 @@ export interface ControlSnapshot {
   disabled: boolean;
   value: unknown;
   errors: Record<string, unknown> | null;
+  validators: string[];          // ← NOVO: nomes dos validators ativos
   children?: ControlSnapshot[];
 }
 

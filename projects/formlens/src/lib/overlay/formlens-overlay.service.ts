@@ -18,8 +18,9 @@ export class FormLensOverlayService {
     }
 
     this.overlayRef = this.overlay.create(this.buildConfig());
-    this.overlayRef.attach(new ComponentPortal(FormLensPanelComponent, null, this.injector));
-
+    this.overlayRef.attach(
+      new ComponentPortal(FormLensPanelComponent, null, this.injector)
+    );
   }
 
   close(): void {
@@ -37,18 +38,20 @@ export class FormLensOverlayService {
   }
 
   private buildConfig(): OverlayConfig {
-  return {
-    hasBackdrop: false,
-    panelClass: ['formlens-overlay-pane'],
-    scrollStrategy: this.overlay.scrollStrategies.reposition(),
-    positionStrategy: this.overlay
-      .position()
-      .global()
-      .top('0')
-      .right('0')
-      .bottom('0'),
-    width: '420px',
-    disposeOnNavigation: true,
-  };
-}
+    return {
+      hasBackdrop: false,
+      panelClass: ['formlens-overlay-pane'],
+      scrollStrategy: this.overlay.scrollStrategies.reposition(),
+      positionStrategy: this.overlay
+        .position()
+        .global()
+        .top('0')
+        .right('0')
+        .bottom('0'),
+      // Sem width fixo aqui — o componente controla via CSS
+      // height: 100% garante que o pane do CDK ocupa a viewport inteira
+      height: '100%',
+      disposeOnNavigation: true,
+    };
+  }
 }

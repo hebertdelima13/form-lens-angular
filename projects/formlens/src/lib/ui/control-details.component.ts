@@ -29,6 +29,17 @@ import { StatusBadgeComponent } from './status-badge.component';
           <div><strong>Disabled:</strong> {{ node.disabled }}</div>
         </div>
 
+        @if (node.validators.length) {
+          <div class="formlens-details__block">
+            <p class="formlens-details__label">Validators</p>
+            <div class="formlens-details__tags">
+              @for (v of node.validators; track v) {
+                <span class="formlens-details__tag">{{ v }}</span>
+              }
+            </div>
+          </div>
+        }
+
         <div class="formlens-details__block">
           <p class="formlens-details__label">Errors</p>
           <pre>{{ node.errors | json }}</pre>
@@ -40,7 +51,7 @@ import { StatusBadgeComponent } from './status-badge.component';
         </div>
       </section>
     } @else {
-      <section class="formlens-details formLens-details--empty">
+      <section class="formlens-details formlens-details--empty">
         <p>Select a control to inspect its details.</p>
       </section>
     }

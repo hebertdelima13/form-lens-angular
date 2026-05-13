@@ -1,12 +1,14 @@
 {
-  "name": "formlens",
+  "name": "form-lens-angular",
   "version": "0.1.0-alpha.1",
+  "description": "Debugging tool for Angular Reactive Forms",
+  "license": "MIT",
+  "sideEffects": false,
   "peerDependencies": {
-    "@angular/common": "^21.2.0",
-    "@angular/core": "^21.2.0"
-  },
-  "dependencies": {
-    "tslib": "^2.3.0"
-  },
-  "sideEffects": false
+    "@angular/common": "^21.0.0",
+    "@angular/core": "^21.0.0",
+    "@angular/forms": "^21.0.0",
+    "@angular/cdk": "^21.0.0",
+    "rxjs": "^7.8.0"
+  }
 }
