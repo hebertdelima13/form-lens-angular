@@ -1,6 +1,6 @@
 {
   "name": "form-lens-angular",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "description": "Debugging tool for Angular Reactive Forms",
   "license": "MIT",
   "sideEffects": false,
