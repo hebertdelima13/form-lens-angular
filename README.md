@@ -9,28 +9,34 @@ It helps you inspect form structure, control state, validation errors, and neste
 Debugging Angular forms often means manually checking `value`, `status`, `errors`, `dirty`, `touched`, and deeply nested controls.
 
 FormLens makes that visual by giving you:
-- a side inspection panel
-- form tree visualization
-- live control state updates
-- error visibility
-- optional invalid field highlight
+- a side inspection panel with live state updates
+- form tree visualization with expand/collapse
+- error and validator visibility per control
+- optional invalid field highlight in your app
+
+## Requirements
+
+- Angular **17 or higher**
+- `@angular/cdk` **17 or higher**
+- `rxjs` **7.8 or higher**
 
 ## Current alpha
 
 The current alpha includes:
-- Reactive Forms support
-- `FormControl`, `FormGroup`, and `FormArray` inspection
+- Reactive Forms support (`FormControl`, `FormGroup`, `FormArray`)
 - live panel with form tree and control details
+- expand/collapse tree navigation
 - search by control name or path
-- optional invalid control highlight
+- validator names visible per control
+- optional invalid control highlight — works with nested groups and FormArrays
+- floating action button (FAB) auto-injected, no manual setup needed
 - demo app for local exploration
-- quick start documentation
-- initial test coverage for core flows
+- 59 unit tests covering core flows
 
 ## Installation
 
 ```bash
-npm install formlens
+npm install form-lens-angular
 ```
 
 ## Quick setup
@@ -39,7 +45,7 @@ Register the provider in your app config:
 
 ```ts
 import { ApplicationConfig } from '@angular/core';
-import { provideFormLens } from 'formlens';
+import { provideFormLens } from 'form-lens-angular';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -48,70 +54,63 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
-Add the directive to a reactive form:
-
-```html
-<form [formGroup]="profileForm" formLens formLensName="Profile form">
-  <input formControlName="name" />
-</form>
-```
-
-Open the inspector from your app using the overlay service:
+Add the directive to any reactive form:
 
 ```ts
-import { Component, inject } from '@angular/core';
-import { FormLensOverlayService } from 'formlens';
+import { FormLensDirective } from 'form-lens-angular';
 
 @Component({
-  selector: 'app-root',
-  template: `<button (click)="openInspector()">Open FormLens</button>`,
+  imports: [ReactiveFormsModule, FormLensDirective],
 })
-export class AppComponent {
-  private readonly formLensOverlay = inject(FormLensOverlayService);
-
-  openInspector(): void {
-    this.formLensOverlay.toggle();
-  }
+export class MyComponent {
+  readonly form = new FormGroup({
+    name: new FormControl('', Validators.required),
+    email: new FormControl('', [Validators.required, Validators.email]),
+  });
 }
 ```
 
+```html
+<form [formGroup]="form" formLens formLensName="My form">
+  <input formControlName="name" />
+  <input formControlName="email" />
+</form>
+```
+
+A FAB will appear in the bottom-right corner. Click it to open the inspector.
+
+## Configuration
+
+```ts
+provideFormLens({
+  overlayInvalidControls: true, // highlight invalid fields in the DOM (default: true)
+})
+```
+
+> `enabled`, `panelPosition`, `hotkey`, and `detailLevel` are declared in the config type but not yet implemented. They are reserved for upcoming releases.
+
 ## Documentation
 
-- [Quick Start](./docs/quick-start.md)
 - [Roadmap](./ROADMAP.md)
 - [Contributing](./CONTRIBUTING.md)
 - [Changelog](./CHANGELOG.md)
 
 ## Status
 
-FormLens is currently in **alpha** stage.
+FormLens is currently in **alpha** stage. Expect breaking changes between alpha releases.
 
-The current focus is validating real-world usefulness for Angular Reactive Forms debugging before expanding scope or hardening the public API further.
-
-## Roadmap highlights
-
-Planned next improvements include:
-- tree expand and collapse
-- richer validator visibility
-- better highlight support for complex nested structures
-- more API hardening before a broader public release
-
-## Demo
-
-Use the demo app in this repository to test:
-- multiple forms on the same screen
-- nested groups and arrays
-- invalid field highlighting
-- live state inspection
+The current focus is validating real-world usefulness for Angular Reactive Forms debugging before expanding scope or hardening the public API.
 
 ## Feedback
 
-At this stage, the most valuable feedback is:
+The most valuable feedback at this stage:
 - real usage in Angular projects
 - DX friction during setup
 - bugs in nested or dynamic forms
 - confusing inspection behavior
 - missing information in the panel
+
+Open an issue or start a discussion on GitHub.
 
 ## License
 

@@ -2,7 +2,38 @@
 
 All notable changes to this project will be documented in this file.
 
-## 0.1.0-alpha.1 - 2026-05-11
+## Unreleased
+
+### Added
+- Floating action button (FAB) auto-injected via `provideAppInitializer` — no manual setup required.
+- Close button (X) in the panel header, synchronized with the FAB via `isOpen` signal.
+- Validator names now visible in the control snapshot (`validators` field).
+- Tree expand/collapse per node.
+- Demo app rewritten with three complex forms: Checkout (nested groups + FormArray), Registration (cross-field validators), and Survey (dynamic FormArray of FormGroups).
+- Unit tests for `StatusBadgeComponent`, `ControlDetailsComponent`, `ControlTreeComponent`, `control-tree-filter.utils`, `FormSnapshotStore`, and `ControlSnapshotFactory` — 59 test cases total.
+
+### Changed
+- Minimum supported Angular version lowered from 21 to **17** (`peerDependencies` updated to `>=17.0.0`).
+- `provideAppInitializer` replaced with `APP_INITIALIZER` for Angular 17+ compatibility.
+- `FormLensFabComponent` removed from public API — it is an internal implementation detail.
+- `FormLensConfig` fields not yet implemented (`enabled`, `panelPosition`, `hotkey`, `detailLevel`) marked with `@reserved` JSDoc.
+- `highlightGroup` and `highlightArray` rewritten to use exact `[formControlName="name"]` queries and DOM position for array items — fixes incorrect element targeting in nested groups and FormArrays.
+- Initial highlight sync deferred with `setTimeout(0)` to ensure DOM is ready before scanning.
+
+### Fixed
+- Highlight not disappearing when a required field became valid.
+- Wrong element being highlighted when multiple controls existed inside a FormGroup.
+- FormArray items not being highlighted due to Angular rendering `[formGroupName]` as a dynamic binding not queryable by attribute value.
+
+### Known limitations
+- `enabled`, `panelPosition`, `hotkey`, and `detailLevel` config options are declared but not yet implemented.
+- Highlight toggle from inside the panel is not available yet.
+- Panel position is fixed to the right side.
+- Current support is focused on Angular Reactive Forms only.
+
+---
+
+## 0.1.0-alpha.1 — 2026-05-11
 
 ### Added
 - Initial Angular Reactive Forms inspection MVP.
@@ -21,15 +52,6 @@ All notable changes to this project will be documented in this file.
 - Overlay behavior updated to remain persistent during form interaction.
 - Panel scrolling improved for long technical content.
 - Public API reduced to a smaller, more stable surface for early adopters.
-
-### Known limitations
-- Tree expand/collapse is not implemented yet.
-- Highlight support for deeply nested dynamic structures can be improved.
-- Highlight toggle is not available from inside the panel yet.
-- Highlight styles are still centered on invalid state only.
-- Validator introspection is still limited.
-- Panel layout responsiveness still needs refinement.
-- Current support is focused on Angular Reactive Forms only.
 
 ### Notes
 - This is an alpha release intended for internal validation and early feedback.
