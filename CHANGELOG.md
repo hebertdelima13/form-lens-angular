@@ -24,6 +24,9 @@ All notable changes to this project will be documented in this file.
 - Highlight not disappearing when a required field became valid.
 - Wrong element being highlighted when multiple controls existed inside a FormGroup.
 - FormArray items not being highlighted due to Angular rendering `[formGroupName]` as a dynamic binding not queryable by attribute value.
+- `NG0600` error on Angular 17 caused by signal writes inside a reactive context — fixed by using `effect()` with `allowSignalWrites: true` in `FormSnapshotStore`.
+- Double `refreshSnapshot()` call when `_selectedFormId` was unset — fixed by adding an early `return` after setting the initial form id.
+- FAB icon stuck on X after navigating away from a form — fixed by subscribing to `overlayRef.detachments()` to sync `isOpen` when the CDK disposes the overlay externally.
 
 ### Known limitations
 - `enabled`, `panelPosition`, `hotkey`, and `detailLevel` config options are declared but not yet implemented.

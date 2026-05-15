@@ -90,3 +90,8 @@ Please aim for:
 At this stage, product feedback is as valuable as code contributions.
 
 If FormLens helped or failed in a real Angular form debugging scenario, that feedback is especially useful.
+
+## Troubleshooting
+
+**Changes to the lib not reflected after reinstall?**
+Run `rm -rf .angular/cache` in the consumer project before `ng serve`.
