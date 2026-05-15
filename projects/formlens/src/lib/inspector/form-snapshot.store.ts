@@ -65,6 +65,7 @@ export class FormSnapshotStore {
 
         if (!selectedFormId || !forms.some((f) => f.id === selectedFormId)) {
           this._selectedFormId.set(forms[0].id);
+          return;
         }
 
         this.watchedControl = null;
