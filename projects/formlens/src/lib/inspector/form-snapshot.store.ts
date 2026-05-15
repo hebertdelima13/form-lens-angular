@@ -1,11 +1,4 @@
-import {
-  Injectable,
-  computed,
-  effect,
-  inject,
-  signal,
-  DestroyRef,
-} from '@angular/core';
+import { Injectable, computed, effect, inject, signal, DestroyRef } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -44,7 +37,7 @@ export class FormSnapshotStore {
   });
 
   readonly filteredSnapshot = computed(() =>
-    filterSnapshotTree(this._activeSnapshot(), this._searchQuery())
+    filterSnapshotTree(this._activeSnapshot(), this._searchQuery()),
   );
 
   readonly selectedNode = computed(() => {
@@ -57,24 +50,28 @@ export class FormSnapshotStore {
   });
 
   constructor() {
-    effect(() => {
-      const forms = this.registry.forms();
-      const selectedFormId = this._selectedFormId();
+    effect(
+      () => {
+        const forms = this.registry.forms();
+        const selectedFormId = this._selectedFormId();
 
-      if (!forms.length) {
-        this._selectedFormId.set(null);
-        this._activeSnapshot.set(null);
-        this._selectedNodePath.set(null);
+        if (!forms.length) {
+          this._selectedFormId.set(null);
+          this._activeSnapshot.set(null);
+          this._selectedNodePath.set(null);
+          this.watchedControl = null;
+          return;
+        }
+
+        if (!selectedFormId || !forms.some((f) => f.id === selectedFormId)) {
+          this._selectedFormId.set(forms[0].id);
+        }
+
         this.watchedControl = null;
-        return;
-      }
-
-      if (!selectedFormId || !forms.some((f) => f.id === selectedFormId)) {
-        this._selectedFormId.set(forms[0].id);
-      }
-
-      this.refreshSnapshot();
-    });
+        this.refreshSnapshot();
+      },
+      { allowSignalWrites: true },
+    );
   }
 
   selectForm(formId: string): void {
@@ -125,31 +122,18 @@ export class FormSnapshotStore {
    * quando refreshSnapshot() é chamado mais de uma vez para o mesmo form.
    */
   private watchControl(control: AbstractControl): void {
-    control.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        const snapshot = this.snapshotFactory.create(
-          this.selectedForm()!.source.control,
-          'root'
-        );
-        this._activeSnapshot.set(snapshot);
-      });
+    control.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      const snapshot = this.snapshotFactory.create(this.selectedForm()!.source.control, 'root');
+      this._activeSnapshot.set(snapshot);
+    });
 
-    control.statusChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        const snapshot = this.snapshotFactory.create(
-          this.selectedForm()!.source.control,
-          'root'
-        );
-        this._activeSnapshot.set(snapshot);
-      });
+    control.statusChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      const snapshot = this.snapshotFactory.create(this.selectedForm()!.source.control, 'root');
+      this._activeSnapshot.set(snapshot);
+    });
   }
 
-  private findNodeByPath(
-    snapshot: ControlSnapshot,
-    path: string
-  ): ControlSnapshot | null {
+  private findNodeByPath(snapshot: ControlSnapshot, path: string): ControlSnapshot | null {
     if (snapshot.path === path) return snapshot;
 
     for (const child of snapshot.children ?? []) {
