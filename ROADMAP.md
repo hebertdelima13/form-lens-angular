@@ -15,21 +15,31 @@ Current focus:
 - tighten API boundaries
 - collect feedback from real Angular projects
 
+## Delivered in alpha
+
+These items were planned and are now implemented:
+
+- tree expand and collapse per node
+- validator names visible per control in the panel
+- floating action button (FAB) auto-injected — no manual setup required
+- Angular 17+ compatibility (`peerDependencies` updated, `APP_INITIALIZER` used instead of `provideAppInitializer`)
+- highlight rewritten to correctly target nested groups and FormArrays
+- FAB icon sync fixed when overlay is disposed externally (navigation)
+
 ## Near term
 
 These are the most likely next improvements:
 
 ### Inspection UX
-- tree expand and collapse
 - better navigation in large form structures
 - improved scanning of control details
-- stronger validator visibility
+- stronger validator visibility and readable explanations
 
 ### Highlighting
 - better support for deeply nested dynamic controls
 - optional toggle from inside the panel
-- richer state visuals beyond invalid only
-- alternate highlight modes
+- richer state visuals beyond invalid only (pending, disabled)
+- alternate highlight modes (badge instead of outline)
 
 ### Stability
 - broader test coverage
