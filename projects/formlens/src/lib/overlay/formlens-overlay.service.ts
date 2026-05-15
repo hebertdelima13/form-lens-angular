@@ -20,9 +20,11 @@ export class FormLensOverlayService {
     }
 
     this.overlayRef = this.overlay.create(this.buildConfig());
-    this.overlayRef.attach(
-      new ComponentPortal(FormLensPanelComponent, null, this.injector)
-    );
+    this.overlayRef.attach(new ComponentPortal(FormLensPanelComponent, null, this.injector));
+    this.overlayRef.detachments().subscribe(() => {
+      this.overlayRef = null;
+      this.isOpen.set(false);
+    });
     this.isOpen.set(true);
   }
 
@@ -46,12 +48,7 @@ export class FormLensOverlayService {
       hasBackdrop: false,
       panelClass: ['formlens-overlay-pane'],
       scrollStrategy: this.overlay.scrollStrategies.reposition(),
-      positionStrategy: this.overlay
-        .position()
-        .global()
-        .top('0')
-        .right('0')
-        .bottom('0'),
+      positionStrategy: this.overlay.position().global().top('0').right('0').bottom('0'),
       height: '100%',
       disposeOnNavigation: true,
     };
