@@ -19,7 +19,7 @@ describe('getControlKind', () => {
   });
 
   it('should return "array" for FormArray', () => {
-    expect(getControlKind(new FormArray([]))).toBe('array');
+    expect(getControlKind(new FormArray<AbstractControl>([]))).toBe('array');
   });
 });
 
@@ -74,7 +74,7 @@ describe('getFormArrayChildrenEntries', () => {
   });
 
   it('should return empty array for empty FormArray', () => {
-  expect(getFormArrayChildrenEntries(new FormArray<AbstractControl>([])))
-    .toEqual([]);
-});
+    expect(getFormArrayChildrenEntries(new FormArray<AbstractControl>([])))
+      .toEqual([]);
+  });
 });

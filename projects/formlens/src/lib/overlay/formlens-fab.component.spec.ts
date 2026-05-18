@@ -37,7 +37,6 @@ describe('FormLensFabComponent', () => {
   it('should render the magnifier icon when overlay is closed', () => {
     setup(false);
     const svg = fixture.nativeElement.querySelector('svg');
-    // Magnifier tem <circle> — X não tem
     expect(svg.querySelector('circle')).not.toBeNull();
   });
 
@@ -83,11 +82,9 @@ describe('FormLensFabComponent', () => {
   it('should update icon reactively when isOpen signal changes', () => {
     setup(false);
 
-    // Fechado → magnifier
     let svg = fixture.nativeElement.querySelector('svg');
     expect(svg.querySelector('circle')).not.toBeNull();
 
-    // Abre
     overlayMock.isOpen.set(true);
     fixture.detectChanges();
 

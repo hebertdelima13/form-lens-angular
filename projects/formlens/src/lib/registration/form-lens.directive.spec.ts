@@ -189,4 +189,44 @@ describe('FormLensDirective', () => {
     expect(() => fixture.destroy()).not.toThrow();
     expect(registry.forms().length).toBe(0);
   });
+
+  it('should use "Untitled form" as default name when formLensName is empty', () => {
+    @Component({
+      standalone: true,
+      imports: [ReactiveFormsModule, FormLensDirective],
+      template: `<form [formGroup]="form" formLens><input formControlName="x" /></form>`,
+    })
+    class NoNameComponent {
+      form = new FormGroup({ x: new FormControl('') });
+    }
+
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [NoNameComponent],
+      providers: [
+        {
+          provide: FORM_LENS_CONFIG,
+          useValue: { ...DEFAULT_FORM_LENS_CONFIG, overlayInvalidControls: false },
+        },
+      ],
+    });
+
+    const f = TestBed.createComponent(NoNameComponent);
+    const reg = TestBed.inject(FormLensRegistry);
+    f.detectChanges();
+
+    expect(reg.forms()[0].name).toBe('Untitled form');
+    f.destroy();
+  });
+
+  it('should generate a unique id for each directive instance', () => {
+    const forms = registry.forms();
+    expect(typeof forms[0].id).toBe('string');
+    expect(forms[0].id.length).toBeGreaterThan(0);
+  });
+
+  it('should clear highlight on destroy', () => {
+    expect(() => fixture.destroy()).not.toThrow();
+    expect(registry.forms().length).toBe(0);
+  });
 });

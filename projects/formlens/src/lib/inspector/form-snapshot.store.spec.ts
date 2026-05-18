@@ -251,4 +251,71 @@ describe('FormSnapshotStore', () => {
     expect(children?.[0].value).toBe('alpha');
     expect(children?.[1].value).toBe('beta');
   });
+
+  // ── effect() guard: lista vazia limpa o estado ────────────────────────────
+
+it('should clear selectedNodePath when all forms are unregistered', () => {
+  const form = new FormGroup({ name: new FormControl('') });
+  registerForm('form-1', form);
+  store.selectNode('root.name');
+  expect(store.selectedNodePath()).toBe('root.name');
+
+  registry.unregister('form-1');
+  TestBed.flushEffects();
+
+  expect(store.selectedNodePath()).toBeNull();
+});
+
+it('should not subscribe to valueChanges twice when selectForm is called again for the same form', () => {
+  const nameControl = new FormControl('');
+  const form = new FormGroup({ name: nameControl });
+  registerForm('form-1', form);
+
+  store.selectForm('form-1');
+
+  nameControl.setValue('A');
+  nameControl.setValue('B');
+
+  expect(store.activeSnapshot()?.children?.[0].value).toBe('B');
+});
+
+// ── selectedFormId nulo não chama refreshSnapshot ─────────────────────────
+
+it('should not throw when effect runs with no forms registered', () => {
+  expect(() => TestBed.flushEffects()).not.toThrow();
+  expect(store.activeSnapshot()).toBeNull();
+});
+
+// ── FormArray no snapshot ─────────────────────────────────────────────────
+
+it('should build snapshot for a FormArray with correct kind and children count', () => {
+  const form = new FormGroup({
+    tags: new FormArray([
+      new FormControl('alpha'),
+      new FormControl('beta'),
+    ]),
+  });
+  registerForm('form-1', form);
+
+  const tagsNode = store.activeSnapshot()?.children?.find((c) => c.name === 'tags');
+  expect(tagsNode?.kind).toBe('array');
+  expect(tagsNode?.children?.length).toBe(2);
+});
+
+it('should reflect FormArray children values in snapshot', () => {
+  const form = new FormGroup({
+    tags: new FormArray([
+      new FormControl('alpha'),
+      new FormControl('beta'),
+    ]),
+  });
+  registerForm('form-1', form);
+
+  const children = store
+    .activeSnapshot()
+    ?.children?.find((c) => c.name === 'tags')?.children;
+
+  expect(children?.[0].value).toBe('alpha');
+  expect(children?.[1].value).toBe('beta');
+});
 });
