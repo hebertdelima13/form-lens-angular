@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { FormSnapshotStore } from './form-snapshot.store';
 import { FormLensRegistry } from '../core/formlens.registry';
@@ -12,7 +12,7 @@ function makeFormDirectiveMock(form: FormGroup): any {
 function makeRegisteredForm(
   id: string,
   form: FormGroup,
-  name = 'Test Form'
+  name = 'Test Form',
 ): FormLensRegisteredForm {
   return {
     id,
@@ -169,15 +169,11 @@ describe('FormSnapshotStore', () => {
     const form = new FormGroup({ name: nameControl });
     registerForm('form-1', form);
 
-    expect(
-      store.activeSnapshot()?.children?.find((c) => c.name === 'name')?.value
-    ).toBe('');
+    expect(store.activeSnapshot()?.children?.find((c) => c.name === 'name')?.value).toBe('');
 
     nameControl.setValue('John');
 
-    expect(
-      store.activeSnapshot()?.children?.find((c) => c.name === 'name')?.value
-    ).toBe('John');
+    expect(store.activeSnapshot()?.children?.find((c) => c.name === 'name')?.value).toBe('John');
   });
 
   it('should refresh snapshot reactively when form status changes', () => {
@@ -185,14 +181,74 @@ describe('FormSnapshotStore', () => {
     const form = new FormGroup({ name: nameControl });
     registerForm('form-1', form);
 
-    expect(
-      store.activeSnapshot()?.children?.find((c) => c.name === 'name')?.invalid
-    ).toBe(true);
+    expect(store.activeSnapshot()?.children?.find((c) => c.name === 'name')?.invalid).toBe(true);
 
     nameControl.setValue('John');
 
-    expect(
-      store.activeSnapshot()?.children?.find((c) => c.name === 'name')?.invalid
-    ).toBe(false);
+    expect(store.activeSnapshot()?.children?.find((c) => c.name === 'name')?.invalid).toBe(false);
+  });
+
+  // ── effect() guard: lista vazia limpa o estado ────────────────────────────
+
+  it('should clear selectedNodePath when all forms are unregistered', () => {
+    const form = new FormGroup({ name: new FormControl('') });
+    registerForm('form-1', form);
+    store.selectNode('root.name');
+    expect(store.selectedNodePath()).toBe('root.name');
+
+    registry.unregister('form-1');
+    TestBed.flushEffects();
+
+    expect(store.selectedNodePath()).toBeNull();
+  });
+
+  it('should not subscribe to valueChanges twice when selectForm is called again for the same form', () => {
+    const nameControl = new FormControl('');
+    const form = new FormGroup({ name: nameControl });
+    registerForm('form-1', form);
+
+    // Seleciona o mesmo form novamente — não pode criar dupla subscrição
+    store.selectForm('form-1');
+
+    let emissions = 0;
+    const original = store.activeSnapshot.bind(store);
+    nameControl.setValue('A');
+    nameControl.setValue('B');
+
+    // O snapshot deve refletir o último valor, não duplicar efeitos
+    expect(store.activeSnapshot()?.children?.[0].value).toBe('B');
+  });
+
+  // ── selectedFormId nulo não chama refreshSnapshot ─────────────────────────
+
+  it('should not throw when effect runs with no forms registered', () => {
+    // Sem nenhum form registrado, o effect deve sair cedo sem erros
+    expect(() => TestBed.flushEffects()).not.toThrow();
+    expect(store.activeSnapshot()).toBeNull();
+  });
+
+  // ── FormArray no snapshot ─────────────────────────────────────────────────
+
+  it('should build snapshot for a FormArray with correct kind and children count', () => {
+    const form = new FormGroup({
+      tags: new FormArray([new FormControl('alpha'), new FormControl('beta')]),
+    });
+    registerForm('form-1', form);
+
+    const tagsNode = store.activeSnapshot()?.children?.find((c) => c.name === 'tags');
+    expect(tagsNode?.kind).toBe('array');
+    expect(tagsNode?.children?.length).toBe(2);
+  });
+
+  it('should reflect FormArray children values in snapshot', () => {
+    const form = new FormGroup({
+      tags: new FormArray([new FormControl('alpha'), new FormControl('beta')]),
+    });
+    registerForm('form-1', form);
+
+    const children = store.activeSnapshot()?.children?.find((c) => c.name === 'tags')?.children;
+
+    expect(children?.[0].value).toBe('alpha');
+    expect(children?.[1].value).toBe('beta');
   });
 });

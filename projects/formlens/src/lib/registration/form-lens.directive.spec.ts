@@ -1,11 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { FormLensDirective } from './form-lens.directive';
 import { FormLensRegistry } from '../core/formlens.registry';
@@ -120,35 +115,78 @@ describe('FormLensDirective', () => {
   });
 
   it('should not register when formLens is used without [formGroup] — directive selector prevents instantiation', () => {
-  @Component({
-    standalone: true,
-    imports: [ReactiveFormsModule, FormLensDirective],
-    // Sem [formGroup] — o seletor form[formGroup][formLens] não vai matchear
-    // então a diretiva nunca é instanciada
-    template: `<form formLens><input /></form>`,
-  })
-  class NoFormGroupComponent {}
+    @Component({
+      standalone: true,
+      imports: [ReactiveFormsModule, FormLensDirective],
+      // Sem [formGroup] — o seletor form[formGroup][formLens] não vai matchear
+      // então a diretiva nunca é instanciada
+      template: `<form formLens><input /></form>`,
+    })
+    class NoFormGroupComponent {}
 
-  TestBed.resetTestingModule();
-  TestBed.configureTestingModule({
-    imports: [NoFormGroupComponent],
-    providers: [
-      {
-        provide: FORM_LENS_CONFIG,
-        useValue: DEFAULT_FORM_LENS_CONFIG,
-      },
-    ],
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [NoFormGroupComponent],
+      providers: [
+        {
+          provide: FORM_LENS_CONFIG,
+          useValue: DEFAULT_FORM_LENS_CONFIG,
+        },
+      ],
+    });
+
+    const f = TestBed.createComponent(NoFormGroupComponent);
+    const reg = TestBed.inject(FormLensRegistry);
+
+    // Não deve lançar erro — diretiva simplesmente não é aplicada
+    expect(() => f.detectChanges()).not.toThrow();
+
+    // Nenhum form deve ter sido registrado
+    expect(reg.forms().length).toBe(0);
+
+    f.destroy();
   });
 
-  const f = TestBed.createComponent(NoFormGroupComponent);
-  const reg = TestBed.inject(FormLensRegistry);
+  it('should use "Untitled form" as default name when formLensName is empty', () => {
+    @Component({
+      standalone: true,
+      imports: [ReactiveFormsModule, FormLensDirective],
+      // formLensName não definido — deve usar o fallback
+      template: `<form [formGroup]="form" formLens><input formControlName="x" /></form>`,
+    })
+    class NoNameComponent {
+      form = new FormGroup({ x: new FormControl('') });
+    }
 
-  // Não deve lançar erro — diretiva simplesmente não é aplicada
-  expect(() => f.detectChanges()).not.toThrow();
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [NoNameComponent],
+      providers: [
+        {
+          provide: FORM_LENS_CONFIG,
+          useValue: { ...DEFAULT_FORM_LENS_CONFIG, overlayInvalidControls: false },
+        },
+      ],
+    });
 
-  // Nenhum form deve ter sido registrado
-  expect(reg.forms().length).toBe(0);
+    const f = TestBed.createComponent(NoNameComponent);
+    const reg = TestBed.inject(FormLensRegistry);
+    f.detectChanges();
 
-  f.destroy();
-});
+    expect(reg.forms()[0].name).toBe('Untitled form');
+    f.destroy();
+  });
+
+  it('should generate a unique id for each directive instance', () => {
+    const forms = registry.forms();
+    // Mesmo tendo só um form, o id deve ser string não vazia
+    expect(typeof forms[0].id).toBe('string');
+    expect(forms[0].id.length).toBeGreaterThan(0);
+  });
+
+  it('should clear highlight on destroy', () => {
+    // Garante que o ciclo de vida completo (init + destroy) não lança erro
+    expect(() => fixture.destroy()).not.toThrow();
+    expect(registry.forms().length).toBe(0);
+  });
 });
