@@ -4,8 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+_Nothing pending yet._
+
+---
+
+## 0.1.0-alpha.2 — 2026-05-18
+
 ### Added
-- Floating action button (FAB) auto-injected via `provideAppInitializer` — no manual setup required.
+- Floating action button (FAB) auto-injected via `APP_INITIALIZER` — no manual setup required.
 - Close button (X) in the panel header, synchronized with the FAB via `isOpen` signal.
 - Validator names now visible in the control snapshot (`validators` field).
 - Tree expand/collapse per node.

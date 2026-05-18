@@ -1,6 +1,6 @@
 # Roadmap
 
-This roadmap reflects the current direction for FormLens after the first MVP alpha.
+This roadmap reflects the current direction for FormLens after the first MVP alpha releases.
 
 The goal is to improve usefulness for Angular Reactive Forms debugging before expanding scope.
 
@@ -15,7 +15,7 @@ Current focus:
 - tighten API boundaries
 - collect feedback from real Angular projects
 
-## Delivered in alpha
+## Delivered in 0.1.0-alpha.2
 
 These items were planned and are now implemented:
 
@@ -25,6 +25,8 @@ These items were planned and are now implemented:
 - Angular 17+ compatibility (`peerDependencies` updated, `APP_INITIALIZER` used instead of `provideAppInitializer`)
 - highlight rewritten to correctly target nested groups and FormArrays
 - FAB icon sync fixed when overlay is disposed externally (navigation)
+- demo app expanded with Checkout, Registration, and Survey forms
+- 59 unit tests covering core snapshot, tree, details, and store flows
 
 ## Near term
 
@@ -42,7 +44,7 @@ These are the most likely next improvements:
 - alternate highlight modes (badge instead of outline)
 
 ### Stability
-- broader test coverage
+- broader integration test coverage
 - cleanup of internal APIs
 - more predictable public API boundaries
 - release hardening for early adopters

@@ -5,7 +5,7 @@ This guide helps you get FormLens running in a minimal Angular app with Reactive
 ## 1. Install
 
 ```bash
-npm install formlens
+npm install form-lens-angular
 ```
 
 ## 2. Register the provider
@@ -16,7 +16,7 @@ Add `provideFormLens()` to your application providers.
 
 ```ts
 import { ApplicationConfig } from '@angular/core';
-import { provideFormLens } from 'formlens';
+import { provideFormLens } from 'form-lens-angular';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -58,7 +58,19 @@ export class App {
 
 ## 4. Add the FormLens directive
 
-Attach `formLens` to the form element.
+Import `FormLensDirective` in your component and attach `formLens` to the form element.
+
+```ts
+import { FormLensDirective } from 'form-lens-angular';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [ReactiveFormsModule, FormLensDirective],
+  templateUrl: './app.html',
+})
+export class App { ... }
+```
 
 ```html
 <form [formGroup]="profileForm" formLens formLensName="Profile form">
@@ -74,30 +86,11 @@ Attach `formLens` to the form element.
 </form>
 ```
 
+> `formLensName` sets the label shown in the panel for this form. It is optional but recommended when multiple forms are registered on the same page.
+
 ## 5. Open the panel
 
-Inject `FormLensOverlayService` and call `toggle()`.
-
-```ts
-import { Component, inject } from '@angular/core';
-import { FormLensOverlayService } from 'formlens';
-
-@Component({
-  selector: 'app-root',
-  template: `
-    <button type="button" (click)="openInspector()">
-      Open FormLens
-    </button>
-  `,
-})
-export class AppComponent {
-  private readonly formLensOverlay = inject(FormLensOverlayService);
-
-  openInspector(): void {
-    this.formLensOverlay.toggle();
-  }
-}
-```
+A floating action button (FAB) is auto-injected into the page when `provideFormLens()` is registered — no manual setup required. Click it to open the inspector.
 
 ## 6. What you should see
 
@@ -114,20 +107,17 @@ You can override defaults when registering the provider.
 
 ```ts
 provideFormLens({
-  enabled: true,
-  panelPosition: 'right',
   overlayInvalidControls: true,
-  hotkey: 'ctrl+shift+f',
-  detailLevel: 'detailed',
 })
 ```
+
+> `enabled`, `panelPosition`, `hotkey`, and `detailLevel` are declared in the config type but **not yet implemented**. They are reserved for upcoming releases and have no effect if set. See [Configuration](./configuration.md) for the full reference.
 
 ## Current limitations
 
 The MVP currently focuses on Angular Reactive Forms.
 
 Known limitations:
-- tree expand and collapse is still pending
 - highlight for deeply nested dynamic structures can be improved
 - validator introspection is still limited
 - panel preferences are not persisted yet
@@ -139,10 +129,11 @@ Check that:
 - the form uses Reactive Forms
 - the host element has `[formGroup]`
 - the form also has `formLens`
+- `FormLensDirective` is imported in the component
 
 ### Invalid fields are not highlighted
 Check that:
-- `overlayInvalidControls` is enabled
+- `overlayInvalidControls` is not set to `false`
 - the control is actually invalid
 - the field uses `formControlName`
 

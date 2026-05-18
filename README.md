@@ -22,6 +22,8 @@ FormLens makes that visual by giving you:
 
 ## Current alpha
 
+Version: `0.1.0-alpha.2`
+
 The current alpha includes:
 - Reactive Forms support (`FormControl`, `FormGroup`, `FormArray`)
 - live panel with form tree and control details
@@ -77,6 +79,8 @@ export class MyComponent {
 </form>
 ```
 
+> `formLensName` sets the label shown in the panel for this form. It is optional but recommended when multiple forms are registered.
+
 A FAB will appear in the bottom-right corner. Click it to open the inspector.
 
 ## Configuration
@@ -89,8 +93,11 @@ provideFormLens({
 
 > `enabled`, `panelPosition`, `hotkey`, and `detailLevel` are declared in the config type but not yet implemented. They are reserved for upcoming releases.
 
-## Documentation
-
+- [Quick start](./docs/quick-start.md)
+- [Configuration](./docs/configuration.md)
+- [API reference](./docs/api-reference.md)
+- [Architecture](./docs/architecture.md)
+- [Troubleshooting](./docs/troubleshooting.md)
 - [Roadmap](./ROADMAP.md)
 - [Contributing](./CONTRIBUTING.md)
 - [Changelog](./CHANGELOG.md)

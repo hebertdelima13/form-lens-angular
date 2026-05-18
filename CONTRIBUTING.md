@@ -57,6 +57,17 @@ Suggested flow:
 4. Run build and tests.
 5. Open a pull request with context and screenshots when relevant.
 
+## Local validation commands
+
+```bash
+npm install
+ng build formlens --configuration production
+ng test formlens
+cd dist/formlens && npm pack
+```
+
+Use `npm pack` to validate the package locally before any release.
+
 ## Pull request notes
 
 A good PR should include:
@@ -95,3 +106,6 @@ If FormLens helped or failed in a real Angular form debugging scenario, that fee
 
 **Changes to the lib not reflected after reinstall?**
 Run `rm -rf .angular/cache` in the consumer project before `ng serve`.
+
+**`NG0600` error on Angular 17?**
+This happens when a signal is written inside a reactive context. Make sure `effect()` uses `allowSignalWrites: true` where needed. This was fixed in `0.1.0-alpha.2` for the core store — if you are seeing it in your own code, the same pattern applies.
