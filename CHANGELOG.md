@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
-_Nothing pending yet._
+- CI pipeline via GitHub Actions — runs tests and build validation on every push and PR to `main`.
 
 ---
 
