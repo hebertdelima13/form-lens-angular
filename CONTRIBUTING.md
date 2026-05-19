@@ -61,9 +61,9 @@ Suggested flow:
 
 ```bash
 npm install
-ng build formlens --configuration production
+npm run build:lib
 ng test formlens
-cd dist/formlens && npm pack
+npm run pack:lib
 ```
 
 Use `npm pack` to validate the package locally before any release.

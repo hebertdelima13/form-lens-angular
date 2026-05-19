@@ -25,6 +25,9 @@ _Nothing pending yet._
 - `FormLensConfig` fields not yet implemented (`enabled`, `panelPosition`, `hotkey`, `detailLevel`) marked with `@reserved` JSDoc.
 - `highlightGroup` and `highlightArray` rewritten to use exact `[formControlName="name"]` queries and DOM position for array items — fixes incorrect element targeting in nested groups and FormArrays.
 - Initial highlight sync deferred with `setTimeout(0)` to ensure DOM is ready before scanning.
+- `peerDependencies` for `rxjs` narrowed from `^6.5.3 || ^7.4.0` to `^7.4.0` — aligns with Angular 17+ requirements.
+- `FORM_LENS_CONFIG` token removed from public API exports — it is an internal implementation detail.
+- Added `build:lib` and `pack:lib` scripts to root `package.json` for clearer local build and packaging flow.
 
 ### Fixed
 - Highlight not disappearing when a required field became valid.
@@ -33,6 +36,7 @@ _Nothing pending yet._
 - `NG0600` error on Angular 17 caused by signal writes inside a reactive context — fixed by using `effect()` with `allowSignalWrites: true` in `FormSnapshotStore`.
 - Double `refreshSnapshot()` call when `_selectedFormId` was unset — fixed by adding an early `return` after setting the initial form id.
 - FAB icon stuck on X after navigating away from a form — fixed by subscribing to `overlayRef.detachments()` to sync `isOpen` when the CDK disposes the overlay externally.
+- Missing `keywords`, `repository`, `bugs`, and `homepage` fields added to library `package.json` — improves npm discoverability and GitHub linking.
 
 ### Known limitations
 - `enabled`, `panelPosition`, `hotkey`, and `detailLevel` config options are declared but not yet implemented.
