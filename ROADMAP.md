@@ -26,7 +26,7 @@ These items were planned and are now implemented:
 - highlight rewritten to correctly target nested groups and FormArrays
 - FAB icon sync fixed when overlay is disposed externally (navigation)
 - demo app expanded with Checkout, Registration, and Survey forms
-- 59 unit tests covering core snapshot, tree, details, and store flows
+- 162 unit tests covering core snapshot, tree, details, store, directive, highlight, and panel flows
 
 ## Near term
 
