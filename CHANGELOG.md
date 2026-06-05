@@ -2,9 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
----
+***
 
-## 0.1.0-alpha.2 — 2026-05-18
+## 0.1.0-alpha.2 — 2026-05-18 — published 2026-06-05
 
 ### Added
 - Floating action button (FAB) auto-injected via `APP_INITIALIZER` — no manual setup required.
@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 - Validator names now visible in the control snapshot (`validators` field).
 - Tree expand/collapse per node.
 - Demo app rewritten with three complex forms: Checkout (nested groups + FormArray), Registration (cross-field validators), and Survey (dynamic FormArray of FormGroups).
-- Unit tests for `StatusBadgeComponent`, `ControlDetailsComponent`, `ControlTreeComponent`, `control-tree-filter.utils`, `FormSnapshotStore`, and `ControlSnapshotFactory` — 59 test cases total.
+- Unit tests for `StatusBadgeComponent`, `ControlDetailsComponent`, `ControlTreeComponent`, `FormLensPanelComponent`, `control-tree-filter.utils`, `FormSnapshotStore`, `ControlSnapshotFactory`, `FormLensDirective`, and `InvalidControlHighlightService` — 162 test cases total.
 - CI pipeline via GitHub Actions — runs tests and build validation on every push and PR to `main`.
 
 ### Changed
@@ -25,6 +25,7 @@ All notable changes to this project will be documented in this file.
 - `peerDependencies` for `rxjs` narrowed from `^6.5.3 || ^7.4.0` to `^7.4.0` — aligns with Angular 17+ requirements.
 - `FORM_LENS_CONFIG` token removed from public API exports — it is an internal implementation detail.
 - Added `build:lib` and `pack:lib` scripts to root `package.json` for clearer local build and packaging flow.
+- Added `keywords`, `repository`, `bugs`, and `homepage` fields to library `package.json` — improves npm discoverability and GitHub linking.
 
 ### Fixed
 - Highlight not disappearing when a required field became valid.
@@ -33,7 +34,6 @@ All notable changes to this project will be documented in this file.
 - `NG0600` error on Angular 17 caused by signal writes inside a reactive context — fixed by using `effect()` with `allowSignalWrites: true` in `FormSnapshotStore`.
 - Double `refreshSnapshot()` call when `_selectedFormId` was unset — fixed by adding an early `return` after setting the initial form id.
 - FAB icon stuck on X after navigating away from a form — fixed by subscribing to `overlayRef.detachments()` to sync `isOpen` when the CDK disposes the overlay externally.
-- Missing `keywords`, `repository`, `bugs`, and `homepage` fields added to library `package.json` — improves npm discoverability and GitHub linking.
 
 ### Known limitations
 - `enabled`, `panelPosition`, `hotkey`, and `detailLevel` config options are declared but not yet implemented.
@@ -41,9 +41,9 @@ All notable changes to this project will be documented in this file.
 - Panel position is fixed to the right side.
 - Current support is focused on Angular Reactive Forms only.
 
----
+***
 
-## 0.1.0-alpha.1 — 2026-05-11
+## 0.1.0-alpha.1 — 2026-05-11 — published 2026-05-11
 
 ### Added
 - Initial Angular Reactive Forms inspection MVP.
