@@ -80,7 +80,7 @@ provideFormLens({
 
 ## Status
 
-Version `0.1.0-alpha.2` — alpha stage. Expect breaking changes between alpha releases.
+Version `0.1.0-alpha.3` — alpha stage. Expect breaking changes between alpha releases.
 
 ## Feedback
 

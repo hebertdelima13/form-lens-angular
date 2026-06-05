@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ***
 
+## 0.1.0-alpha.3 — 2026-06-05
+
+### Changed
+- `homepage` updated to live demo URL — `https://hebertdelima13.github.io/form-lens-angular/`
+- GitHub Pages demo deployed — available at `https://hebertdelima13.github.io/form-lens-angular/`
+
+***
+
 ## 0.1.0-alpha.2 — 2026-05-18 — published 2026-06-05
 
 ### Added

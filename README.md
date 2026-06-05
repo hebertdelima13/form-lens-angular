@@ -26,7 +26,7 @@ FormLens makes that visual by giving you:
 
 ## Current alpha
 
-Version: `0.1.0-alpha.2`
+Version: `0.1.0-alpha.3`
 
 The current alpha includes:
 - Reactive Forms support (`FormControl`, `FormGroup`, `FormArray`)
