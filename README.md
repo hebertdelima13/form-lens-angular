@@ -33,7 +33,7 @@ The current alpha includes:
 - optional invalid control highlight — works with nested groups and FormArrays
 - floating action button (FAB) auto-injected, no manual setup needed
 - demo app for local exploration
-- 59 unit tests covering core flows
+- 162 unit tests covering core flows
 
 ## Installation
 
