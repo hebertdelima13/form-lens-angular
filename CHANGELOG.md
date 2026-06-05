@@ -2,10 +2,6 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
-
-- CI pipeline via GitHub Actions — runs tests and build validation on every push and PR to `main`.
-
 ---
 
 ## 0.1.0-alpha.2 — 2026-05-18
@@ -17,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - Tree expand/collapse per node.
 - Demo app rewritten with three complex forms: Checkout (nested groups + FormArray), Registration (cross-field validators), and Survey (dynamic FormArray of FormGroups).
 - Unit tests for `StatusBadgeComponent`, `ControlDetailsComponent`, `ControlTreeComponent`, `control-tree-filter.utils`, `FormSnapshotStore`, and `ControlSnapshotFactory` — 59 test cases total.
+- CI pipeline via GitHub Actions — runs tests and build validation on every push and PR to `main`.
 
 ### Changed
 - Minimum supported Angular version lowered from 21 to **17** (`peerDependencies` updated to `>=17.0.0`).
