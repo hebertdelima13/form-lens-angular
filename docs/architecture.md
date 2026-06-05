@@ -51,7 +51,7 @@ Bridges Angular's Reactive Forms API with FormLens.
 | `form-lens.directive.ts` | `FormLensDirective` — attaches to `[formGroup]` elements |
 | `form-lens-registration.utils.ts` | ID generation and name resolution utilities |
 
-The directive runs `ngOnInit` to register the form, `ngOnChanges` to keep the name in sync, and `ngOnDestroy` to clean up the registry entry and highlight state. It does not hold state itself — it delegates everything to the registry and highlight service.
+The directive runs `ngOnInit` to register the form and `ngOnDestroy` to clean up the registry entry and highlight state. It does not hold state itself — it delegates everything to the registry and highlight service.
 
 ---
 

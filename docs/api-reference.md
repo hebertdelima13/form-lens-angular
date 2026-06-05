@@ -95,7 +95,6 @@ import { FormLensDirective } from 'form-lens-angular';
 ### Lifecycle
 
 - **`ngOnInit`** — registers the form in `FormLensRegistry` and begins live state observation.
-- **`ngOnChanges`** — updates the registered name when `formLensName` changes.
 - **`ngOnDestroy`** — unregisters the form and clears any active highlight.
 
 ---
