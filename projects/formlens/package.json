@@ -12,7 +12,7 @@
     "rxjs": "^7.4.0"
   },
   "keywords": ["angular", "forms", "devtools", "reactive-forms", "debugging"],
-  "homepage": "https://github.com/hebertdelima13/form-lens-angular",
+  "homepage": "https://hebertdelima13.github.io/form-lens-angular/",
   "bugs": "https://github.com/hebertdelima13/form-lens-angular/issues",
   "repository": {
     "type": "git",
